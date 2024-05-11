@@ -1,0 +1,18 @@
+(; Specification of the prelude encoding ;)
+
+Set : Type.
+injective El : Set -> Type.
+o : Set.
+injective Prf : El o -> Type.
+
+arrd : (a : Set) -> (El a -> Set) -> Set.
+[a, b] El (arrd a b) --> (z : El a) -> El (b z).
+
+impd : (a : El o) -> (Prf a -> El o) -> El o.
+[a, b] Prf (impd a b) --> (z : Prf a) -> Prf (b z).
+
+pi : (a : El o) -> (Prf a -> Set) -> Set.
+[a, b] El (pi a b) --> (z : Prf a) -> El (b z).
+
+fa : (a : Set) -> (El a -> El o) -> El o.
+[a, b] Prf (fa a b) --> (z : El a) -> Prf (b z).

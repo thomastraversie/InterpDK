@@ -1,0 +1,314 @@
+#REQUIRE lo.
+#REQUIRE int.
+
+
+(; Parameters for interpreting natural numbers into integers ;)
+
+def nat_s : lo_sp.Set_s 
+  := int.int.
+
+def nat_p : lo_sp.Set_p nat_s 
+  := z => int.geq_i z int.0_i.
+
+def 0_n_s : lo_sp.El_s nat_s nat_p 
+  := int.0_i.
+
+def 0_n_p : lo_sp.El_p nat_s nat_p 0_n_s 
+  := int.ax_i_1 int.0_i.
+
+def succ_n_s :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) -> lo_sp.El_s nat_s nat_p
+  :=
+  x_s => x_p => int.succ_i x_s.
+
+def succ_n_p :
+   x_s:(lo_sp.El_s nat_s nat_p) ->
+   x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+   lo_sp.El_p nat_s nat_p (succ_n_s x_s x_p)
+  :=
+  x_s : lo.El int.int => x_p : lo.Prf (int.geq_i x_s int.0_i) => int.ax_i_3 (int.succ_i x_s) x_s int.0_i (int.ax_i_2 x_s) x_p.
+
+def geq_n_s :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  y_s:(lo_sp.El_s nat_s nat_p) ->
+  y_p:(lo_sp.El_p nat_s nat_p y_s) -> 
+  lo_sp.El_s lo_sp.o_s lo_sp.o_p
+  :=
+  x_s => x_p => y_s => y_p => int.geq_i x_s y_s.
+
+def geq_n_p :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  y_s:(lo_sp.El_s nat_s nat_p) ->
+  y_p:(lo_sp.El_p nat_s nat_p y_s) ->
+  lo.Prf (lo_sp.o_p (geq_n_s x_s x_p y_s y_p))
+  :=
+  x_s => x_p => y_s => y_p => p => p.
+
+def ax_n_1_s :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  lo_sp.Prf_s (geq_n_s x_s x_p x_s x_p) (geq_n_p x_s x_p x_s x_p)
+  :=
+  x_s => x_p => int.ax_i_1 x_s.
+
+def ax_n_1_p :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  lo_sp.Prf_s (geq_n_s x_s x_p x_s x_p) (geq_n_p x_s x_p x_s x_p)
+  :=
+  ax_n_1_s.
+
+def ax_n_2_s :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  lo_sp.Prf_s
+    (geq_n_s (succ_n_s x_s x_p) (succ_n_p x_s x_p) x_s x_p)
+    (geq_n_p (succ_n_s x_s x_p) (succ_n_p x_s x_p) x_s x_p)
+  :=
+  x_s => x_p => int.ax_i_2 x_s.
+
+def ax_n_2_p :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  lo_sp.Prf_s
+    (geq_n_s (succ_n_s x_s x_p) (succ_n_p x_s x_p) x_s x_p)
+    (geq_n_p (succ_n_s x_s x_p) (succ_n_p x_s x_p) x_s x_p)
+  :=
+  ax_n_2_s.
+
+def ax_n_3_s :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  y_s:(lo_sp.El_s nat_s nat_p) ->
+  y_p:(lo_sp.El_p nat_s nat_p y_s) ->
+  z_s:(lo_sp.El_s nat_s nat_p) ->
+  z_p:(lo_sp.El_p nat_s nat_p z_s) ->
+  h1_s:(lo_sp.Prf_s (geq_n_s x_s x_p y_s y_p) (geq_n_p x_s x_p y_s y_p)) ->
+  h1_p:(lo_sp.Prf_s (geq_n_s x_s x_p y_s y_p) (geq_n_p x_s x_p y_s y_p)) ->
+  h2_s:(lo_sp.Prf_s (geq_n_s y_s y_p z_s z_p) (geq_n_p y_s y_p z_s z_p)) ->
+  h2_p:(lo_sp.Prf_s (geq_n_s y_s y_p z_s z_p) (geq_n_p y_s y_p z_s z_p)) ->
+  lo_sp.Prf_s (geq_n_s x_s x_p z_s z_p) (geq_n_p x_s x_p z_s z_p)
+  :=
+  x_s => x_p => y_s => y_p => z_s => z_p => h1_s => h1_p => h2_s => h2_p =>
+  int.ax_i_3 x_s y_s z_s h1_s h2_s.
+
+def ax_n_3_p :
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+  y_s:(lo_sp.El_s nat_s nat_p) ->
+  y_p:(lo_sp.El_p nat_s nat_p y_s) ->
+  z_s:(lo_sp.El_s nat_s nat_p) ->
+  z_p:(lo_sp.El_p nat_s nat_p z_s) ->
+  h1_s:(lo_sp.Prf_s (geq_n_s x_s x_p y_s y_p) (geq_n_p x_s x_p y_s y_p)) ->
+  h1_p:(lo_sp.Prf_s (geq_n_s x_s x_p y_s y_p) (geq_n_p x_s x_p y_s y_p)) ->
+  h2_s:(lo_sp.Prf_s (geq_n_s y_s y_p z_s z_p) (geq_n_p y_s y_p z_s z_p)) ->
+  h2_p:(lo_sp.Prf_s (geq_n_s y_s y_p z_s z_p) (geq_n_p y_s y_p z_s z_p)) ->
+  lo_sp.Prf_s (geq_n_s x_s x_p z_s z_p) (geq_n_p x_s x_p z_s z_p)
+  :=
+  ax_n_3_s.
+
+uip : 
+  (p : lo.El lo.o) -> 
+  (h1 : lo.Prf p) -> 
+  (h2 : lo.Prf p) -> 
+  (Q : (lo.Prf p -> lo.El lo.o)) -> 
+  lo.Prf (Q h1) -> lo.Prf (Q h2).
+
+def rec_n_s :
+  P_s:(x_s:(lo_sp.El_s nat_s nat_p) ->
+       x_p:(lo_sp.El_p nat_s nat_p x_s) -> lo_sp.El_s lo_sp.o_s lo_sp.o_p) ->
+  P_p:(x_s:(lo_sp.El_s nat_s nat_p) ->
+       x_p:(lo_sp.El_p nat_s nat_p x_s) -> lo.Prf (lo_sp.o_p (P_s x_s x_p))) ->
+  P0_s:(lo_sp.Prf_s (P_s 0_n_s 0_n_p) (P_p 0_n_s 0_n_p)) ->
+  P0_p:(lo_sp.Prf_s (P_s 0_n_s 0_n_p) (P_p 0_n_s 0_n_p)) ->
+  IH_s:(x_s:(lo_sp.El_s nat_s nat_p) ->
+        x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+        h_s:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        h_p:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        lo_sp.Prf_s
+          (P_s (succ_n_s x_s x_p) (succ_n_p x_s x_p))
+          (P_p (succ_n_s x_s x_p) (succ_n_p x_s x_p))) ->
+  IH_p:(x_s:(lo_sp.El_s nat_s nat_p) ->
+        x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+        h_s:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        h_p:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        lo_sp.Prf_s
+          (P_s (succ_n_s x_s x_p) (succ_n_p x_s x_p))
+          (P_p (succ_n_s x_s x_p) (succ_n_p x_s x_p))) ->
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) -> 
+  lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)
+  :=
+  P_s => P_p => P0_s => P0_p => IH_s => IH_p => x_s => x_p =>
+  int.rec_i int.0_i 
+    (x => lo.fa lo.o (Q => lo.impd (lo.impd (int.geq_i x int.0_i) (h1 => lo.impd (P_s x h1) (h2 => Q))) (h => Q)))
+    (Q => pQ => pQ 0_n_p P0_s) 
+    (x: (lo.El int.int) => 
+      h1 : lo.Prf (int.geq_i x int.0_i) => 
+      h2 : lo.Prf (lo.fa lo.o (Q => lo.impd (lo.impd (int.geq_i x int.0_i) (h1 => lo.impd (P_s x h1) (h2 => Q))) (h => Q))) => 
+      Q => pQ => pQ (succ_n_p x h1) 
+        (IH_s x h1 
+          (h2 (P_s x h1) (ha => hb => uip (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))
+          (h2 (P_s x h1) (ha => hb => uip (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))))
+    x_s x_p (P_s x_s x_p) (ha => hb => uip (int.geq_i x_s int.0_i) ha x_p (h => P_s x_s h) hb). 
+
+def rec_n_p :
+  P_s:(x_s:(lo_sp.El_s nat_s nat_p) ->
+       x_p:(lo_sp.El_p nat_s nat_p x_s) -> lo_sp.El_s lo_sp.o_s lo_sp.o_p) ->
+  P_p:(x_s:(lo_sp.El_s nat_s nat_p) ->
+       x_p:(lo_sp.El_p nat_s nat_p x_s) -> lo.Prf (lo_sp.o_p (P_s x_s x_p))) ->
+  P0_s:(lo_sp.Prf_s (P_s 0_n_s 0_n_p) (P_p 0_n_s 0_n_p)) ->
+  P0_p:(lo_sp.Prf_s (P_s 0_n_s 0_n_p) (P_p 0_n_s 0_n_p)) ->
+  IH_s:(x_s:(lo_sp.El_s nat_s nat_p) ->
+        x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+        h_s:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        h_p:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        lo_sp.Prf_s
+          (P_s (succ_n_s x_s x_p) (succ_n_p x_s x_p))
+          (P_p (succ_n_s x_s x_p) (succ_n_p x_s x_p))) ->
+  IH_p:(x_s:(lo_sp.El_s nat_s nat_p) ->
+        x_p:(lo_sp.El_p nat_s nat_p x_s) ->
+        h_s:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        h_p:(lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)) ->
+        lo_sp.Prf_s
+          (P_s (succ_n_s x_s x_p) (succ_n_p x_s x_p))
+          (P_p (succ_n_s x_s x_p) (succ_n_p x_s x_p))) ->
+  x_s:(lo_sp.El_s nat_s nat_p) ->
+  x_p:(lo_sp.El_p nat_s nat_p x_s) -> 
+  lo_sp.Prf_s (P_s x_s x_p) (P_p x_s x_p)
+  :=
+  rec_n_s.
+
+
+(; Theorems derived for free ;)
+
+thm thm1_s :
+  x_s:(lo.El int.int) -> 
+  x_p:(lo.Prf (int.geq_i x_s int.0_i)) -> 
+  lo.Prf (int.geq_i x_s int.0_i)
+  :=
+  x_s =>
+  x_p =>
+  rec_n_s
+    (z_s => z_p => geq_n_s z_s z_p 0_n_s 0_n_p)
+    (z_s => z_p => geq_n_p z_s z_p 0_n_s 0_n_p)
+    (ax_n_1_s 0_n_s 0_n_p)
+    (ax_n_1_p 0_n_s 0_n_p)
+    (x_s0 =>
+     x_p0 =>
+     Px_s =>
+     Px_p =>
+     ax_n_3_s
+       (succ_n_s x_s0 x_p0)
+       (succ_n_p x_s0 x_p0)
+       x_s0
+       x_p0
+       0_n_s
+       0_n_p
+       (ax_n_2_s x_s0 x_p0)
+       (ax_n_2_p x_s0 x_p0)
+       Px_s
+       Px_p)
+    (x_s0 =>
+     x_p0 =>
+     Px_s =>
+     Px_p =>
+     ax_n_3_p
+       (succ_n_s x_s0 x_p0)
+       (succ_n_p x_s0 x_p0)
+       x_s0
+       x_p0
+       0_n_s
+       0_n_p
+       (ax_n_2_s x_s0 x_p0)
+       (ax_n_2_p x_s0 x_p0)
+       Px_s
+       Px_p)
+    x_s
+    x_p.
+
+thm thm1_p :
+  x_s:(lo.El int.int) -> 
+  x_p:(lo.Prf (int.geq_i x_s int.0_i)) -> 
+  lo.Prf (int.geq_i x_s int.0_i)
+  :=
+  x_s =>
+  x_p =>
+  rec_n_p
+    (z_s => z_p => geq_n_s z_s z_p 0_n_s 0_n_p)
+    (z_s => z_p => geq_n_p z_s z_p 0_n_s 0_n_p)
+    (ax_n_1_s 0_n_s 0_n_p)
+    (ax_n_1_p 0_n_s 0_n_p)
+    (x_s0 =>
+     x_p0 =>
+     Px_s =>
+     Px_p =>
+     ax_n_3_s
+       (succ_n_s x_s0 x_p0)
+       (succ_n_p x_s0 x_p0)
+       x_s0
+       x_p0
+       0_n_s
+       0_n_p
+       (ax_n_2_s x_s0 x_p0)
+       (ax_n_2_p x_s0 x_p0)
+       Px_s
+       Px_p)
+    (x_s0 =>
+     x_p0 =>
+     Px_s =>
+     Px_p =>
+     ax_n_3_p
+       (succ_n_s x_s0 x_p0)
+       (succ_n_p x_s0 x_p0)
+       x_s0
+       x_p0
+       0_n_s
+       0_n_p
+       (ax_n_2_s x_s0 x_p0)
+       (ax_n_2_p x_s0 x_p0)
+       Px_s
+       Px_p)
+    x_s
+    x_p.
+
+thm thm2_s :
+  x_s:(lo.El int.int) ->
+  x_p:(lo.Prf (int.geq_i x_s int.0_i)) -> 
+  lo.Prf (int.geq_i (int.succ_i x_s) int.0_i)
+  :=
+  x_s =>
+  x_p =>
+  ax_n_3_s
+    (succ_n_s x_s x_p)
+    (succ_n_p x_s x_p)
+    x_s
+    x_p
+    0_n_s
+    0_n_p
+    (ax_n_2_s x_s x_p)
+    (ax_n_2_p x_s x_p)
+    (thm1_s x_s x_p)
+    (thm1_p x_s x_p).
+
+thm thm2_p :
+  x_s:(lo.El int.int) ->
+  x_p:(lo.Prf (int.geq_i x_s int.0_i)) -> 
+  lo.Prf (int.geq_i (int.succ_i x_s) int.0_i)
+  :=
+  x_s =>
+  x_p =>
+  ax_n_3_p
+    (succ_n_s x_s x_p)
+    (succ_n_p x_s x_p)
+    x_s
+    x_p
+    0_n_s
+    0_n_p
+    (ax_n_2_s x_s x_p)
+    (ax_n_2_p x_s x_p)
+    (thm1_s x_s x_p)
+    (thm1_p x_s x_p).

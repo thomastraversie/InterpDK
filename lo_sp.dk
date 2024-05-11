@@ -1,0 +1,246 @@
+#REQUIRE lo.
+
+
+(; Parameters for interpreting the prelude encoding ;)
+
+def Set_s : Type 
+  := lo.Set.
+
+def Set_p : lo.Set -> Type 
+  := x => (lo.El x -> lo.El lo.o).
+
+def El_s : x_s : lo.Set -> x_p : (lo.El x_s -> lo.El lo.o) -> Type 
+  := x_s => x_p => lo.El x_s.
+
+def El_p : x_s : lo.Set -> x_p : (lo.El x_s -> lo.El lo.o) -> lo.El x_s -> Type
+  := x_s => x_p => u => lo.Prf (x_p u).
+
+def o_s : lo.Set 
+  := lo.o.
+
+def o_p : lo.El lo.o -> lo.El lo.o 
+  := z => lo.impd z (x => z).
+
+def Prf_s : x_s: lo.El lo.o -> x_p : lo.Prf (o_p x_s) -> Type
+  := x_s => x_p => lo.Prf x_s.
+
+def Prf_p : x_s: lo.El lo.o -> x_p : lo.Prf (o_p x_s) -> lo.Prf x_s -> Type
+  := x_s => x_p => u => lo.Prf x_s.
+
+def arrd_s :
+  a_s : lo.Set ->
+  a_p : (lo.El a_s -> lo.El lo.o) ->
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) ->
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) ->
+  lo.Set
+  := 
+  a_s => a_p => b_s => b_p =>
+  lo.arrd a_s (x_s => lo.pi (a_p x_s) (b_s x_s)).
+
+def arrd_p :
+  a_s : lo.Set ->
+  a_p : (lo.El a_s -> lo.El lo.o) ->
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) ->
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) ->
+  f : lo.El (arrd_s a_s a_p b_s b_p) ->
+  lo.El lo.o
+  :=
+  a_s => a_p => b_s => b_p => f =>
+  lo.fa a_s (x_s => lo.impd (a_p x_s) (x_p => b_p x_s x_p (f x_s x_p))).
+
+def impd_s :
+  a_s : lo.El lo.o ->
+  a_p : lo.Prf (o_p a_s) ->
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) ->
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) ->
+  lo.El lo.o
+  :=
+  a_s => a_p => b_s => b_p =>
+  lo.impd a_s (x_s => lo.impd a_s (b_s x_s)).
+
+def impd_p :
+  a_s : lo.El lo.o ->
+  a_p : lo.Prf (o_p a_s) ->
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) ->
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) ->
+  lo.Prf (impd_s a_s a_p b_s b_p) -> lo.Prf (impd_s a_s a_p b_s b_p)
+  :=
+  a_s => a_p => b_s => b_p => p => p.
+
+def pi_s :
+  a_s : lo.El lo.o ->
+  a_p : lo.Prf (o_p a_s) ->
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) ->
+  b_p : (x_s : lo.Prf a_s -> x_p : lo.Prf a_s -> lo.El (b_s x_s x_p) -> lo.El lo.o) ->
+  lo.Set
+  :=
+  a_s => a_p => b_s => b_p =>
+  lo.pi a_s (x_s => lo.pi a_s (b_s x_s)).
+
+def pi_p :
+  a_s : lo.El lo.o ->
+  a_p : lo.Prf (o_p a_s) ->
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) ->
+  b_p : (x_s : lo.Prf a_s -> x_p : lo.Prf a_s -> lo.El (b_s x_s x_p) -> lo.El lo.o) ->
+  lo.El (pi_s a_s a_p b_s b_p) -> lo.El lo.o
+  :=
+  a_s => a_p => b_s => b_p => f =>
+  lo.impd a_s (x_s => lo.impd a_s (x_p => b_p x_s x_p (f x_s x_p))).
+
+def fa_s :
+  a_s : lo.Set ->
+  a_p : (lo.El a_s -> lo.El lo.o) ->
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) ->
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) ->
+  lo.El lo.o
+  :=
+  a_s => a_p => b_s => b_p =>
+  lo.fa a_s (x_s => lo.impd (a_p x_s) (b_s x_s)).
+
+def fa_p :
+  a_s : lo.Set ->
+  a_p : (lo.El a_s -> lo.El lo.o) ->
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) ->
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) ->
+  lo.Prf (fa_s a_s a_p b_s b_p) -> lo.Prf (fa_s a_s a_p b_s b_p)
+  :=
+  a_s => a_p => b_s => b_p => p => p.
+
+
+(; Checking that the four rewrite rules are preserved by the two translations ;)
+
+def l_arrd_s :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  lo.El (arrd_s a_s a_p b_s b_p).
+
+def r_arrd_s :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p)).
+
+#ASSERT l_arrd_s == r_arrd_s.
+
+def l_arrd_p :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  f : lo.El (arrd_s a_s a_p b_s b_p) =>
+  lo.Prf ((arrd_p a_s a_p b_s b_p) f).
+
+def r_arrd_p :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Set) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  f : lo.El (arrd_s a_s a_p b_s b_p) =>
+  (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf ((b_p x_s x_p) (f x_s x_p))).
+
+#ASSERT l_arrd_p == r_arrd_p.
+
+def l_impd_s :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  lo.Prf (impd_s a_s a_p b_s b_p).
+
+def r_impd_s :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  (x_s : lo.Prf a_s -> x_p : lo.Prf a_s -> lo.Prf (b_s x_s x_p)).
+
+#ASSERT l_impd_s == r_impd_s.
+
+def l_impd_p :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  f : lo.Prf (impd_s a_s a_p b_s b_p) =>
+  lo.Prf (impd_s a_s a_p b_s b_p).
+
+def r_impd_p :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.El lo.o) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  f : lo.Prf (impd_s a_s a_p b_s b_p) =>
+  (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf (b_s x_s x_p)).
+
+#ASSERT l_impd_p == r_impd_p.
+
+def l_pi_s :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  lo.El (pi_s a_s a_p b_s b_p).
+
+def r_pi_s :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  (x_s : lo.Prf a_s -> x_p : lo.Prf a_s -> lo.El (b_s x_s x_p)).
+
+#ASSERT l_pi_s == r_pi_s.
+
+def l_pi_p :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  f : lo.El (pi_s a_s a_p b_s b_p) =>
+  lo.Prf ((pi_p a_s a_p b_s b_p) f).
+
+def r_pi_p :=
+  a_s : lo.El lo.o =>
+  a_p : lo.Prf (o_p a_s) =>
+  b_s : (x_s : lo.Prf a_s -> lo.Prf a_s -> lo.Set) =>
+  b_p : (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.El (b_s x_s x_p) -> lo.El lo.o) =>
+  f : lo.El (pi_s a_s a_p b_s b_p) =>
+  (x_s : lo.Prf a_s -> x_p : (lo.Prf a_s) -> lo.Prf ((b_p x_s x_p) (f x_s x_p))).
+
+#ASSERT l_pi_p == r_pi_p.
+
+def l_fa_s :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  lo.Prf (fa_s a_s a_p b_s b_p).
+
+def r_fa_s :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (b_s x_s x_p)).
+
+#ASSERT l_fa_s == r_fa_s.
+
+def l_fa_p :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  f : lo.Prf (fa_s a_s a_p b_s b_p) =>
+  lo.Prf (fa_s a_s a_p b_s b_p).
+
+def r_fa_p :=
+  a_s : lo.Set =>
+  a_p : (lo.El a_s -> lo.El lo.o) =>
+  b_s : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.El lo.o) =>
+  b_p : (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (o_p (b_s x_s x_p))) =>
+  f : lo.Prf (fa_s a_s a_p b_s b_p) =>
+  (x_s : lo.El a_s -> x_p : lo.Prf (a_p x_s) -> lo.Prf (b_s x_s x_p)).
+
+#ASSERT l_fa_p == r_fa_p.

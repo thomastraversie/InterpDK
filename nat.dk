@@ -1,0 +1,32 @@
+#REQUIRE lo.
+
+
+(; Specification of a theory of natural numbers ;)
+
+nat : lo.Set.
+0_n : lo.El nat.
+succ_n : lo.El nat -> lo.El nat.
+geq_n : lo.El nat -> lo.El nat -> lo.El lo.o.
+
+ax_n_1 : (x : lo.El nat) -> lo.Prf (geq_n x x).
+ax_n_2 : (x : lo.El nat) -> lo.Prf (geq_n (succ_n x) x).
+ax_n_3 : (x : lo.El nat) -> (y : lo.El nat) -> (z : lo.El nat) -> 
+        lo.Prf (geq_n x y) -> lo.Prf (geq_n y z) -> lo.Prf (geq_n x z).
+
+rec_n : (P : (lo.El nat -> lo.El lo.o)) -> 
+        lo.Prf (P 0_n) -> 
+        ((x : lo.El nat) -> lo.Prf (P x) -> lo.Prf (P (succ_n x))) ->
+        (x : lo.El nat) -> lo.Prf (P x).
+
+
+(; Some theorems on natural numbers ;)
+
+thm thm1 : (x : lo.El nat) -> lo.Prf (geq_n x 0_n)
+  := x => rec_n 
+    (z => geq_n z 0_n) 
+    (ax_n_1 0_n)
+    (x => Px => ax_n_3 (succ_n x) x 0_n (ax_n_2 x) Px)
+    x.
+
+thm thm2 : (x : lo.El nat) -> lo.Prf (geq_n (succ_n x) 0_n)
+  := x => ax_n_3 (succ_n x) x 0_n (ax_n_2 x) (thm1 x).

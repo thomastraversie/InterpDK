@@ -1,0 +1,23 @@
+#REQUIRE lo.
+
+
+(; Specification of a theory of integers ;)
+
+int : lo.Set.
+0_i : lo.El int.
+succ_i : lo.El int -> lo.El int.
+pred_i : lo.El int -> lo.El int.
+geq_i : lo.El int -> lo.El int -> lo.El lo.o.
+
+ax_i_1 : (x : lo.El int) -> lo.Prf (geq_i x x).
+ax_i_2 : (x : lo.El int) -> lo.Prf (geq_i (succ_i x) x).
+ax_i_3 : (x : lo.El int) -> (y : lo.El int) -> (z : lo.El int) -> 
+        lo.Prf (geq_i x y) -> lo.Prf (geq_i y z) -> lo.Prf (geq_i x z).
+
+ax_i_4 : (x : lo.El int) -> (P : (lo.El int -> lo.El lo.o)) -> lo.Prf (P (succ_i (pred_i x))) -> lo.Prf (P x).
+ax_i_5 : (x : lo.El int) -> (P : (lo.El int -> lo.El lo.o)) -> lo.Prf (P (pred_i (succ_i x))) -> lo.Prf (P x).
+
+rec_i : (c : lo.El int) -> (P : (lo.El int -> lo.El lo.o)) -> 
+        lo.Prf (P c) -> 
+        ((x : lo.El int) -> lo.Prf (geq_i x c) -> lo.Prf (P x) -> lo.Prf (P (succ_i x))) ->
+        (x : lo.El int) -> lo.Prf (geq_i x c) -> lo.Prf (P x).
