@@ -110,7 +110,7 @@ def ax_n_3_p :
   :=
   ax_n_3_s.
 
-uip : 
+proof_irr : 
   (p : lo.El lo.o) -> 
   (h1 : lo.Prf p) -> 
   (h2 : lo.Prf p) -> 
@@ -151,9 +151,9 @@ def rec_n_s :
       h2 : lo.Prf (lo.fa lo.o (Q => lo.impd (lo.impd (int.geq_i x int.0_i) (h1 => lo.impd (P_s x h1) (h2 => Q))) (h => Q))) => 
       Q => pQ => pQ (succ_n_p x h1) 
         (IH_s x h1 
-          (h2 (P_s x h1) (ha => hb => uip (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))
-          (h2 (P_s x h1) (ha => hb => uip (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))))
-    x_s x_p (P_s x_s x_p) (ha => hb => uip (int.geq_i x_s int.0_i) ha x_p (h => P_s x_s h) hb). 
+          (h2 (P_s x h1) (ha => hb => proof_irr (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))
+          (h2 (P_s x h1) (ha => hb => proof_irr (int.geq_i x int.0_i) ha h1 (h => P_s x h) hb))))
+    x_s x_p (P_s x_s x_p) (ha => hb => proof_irr (int.geq_i x_s int.0_i) ha x_p (h => P_s x_s h) hb). 
 
 def rec_n_p :
   P_s:(x_s:(lo_sp.El_s nat_s nat_p) ->
